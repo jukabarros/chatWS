@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+       xmlns:p="http://primefaces.org/ui">
+<h:head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Chat WS</title>
+</h:head>
+<h:body>
+    <ui:composition template="layout/template.xhtml">
+      <ui:define name="content">
+      <p:panel>
+        <h:form id="createUser">
+          <p:messages autoUpdate="true"/>   
+          <p:outputLabel for="nickname" value="Apelido:" style="color: crimson"/>
+           <p:inputText id="nickname" value="#{userController.user.nickname}"
+             style="color: blue" required="true" requiredMessage="Nome: Campo obrigatório" /> 
+          <h:commandButton id="go" value="Entrar" action="#{userController.addUser}"/>
+        </h:form>
+      </p:panel>
+      
+      <p:panel>
+      	<p:dataList value="#{userController.users}" var="user" type="ordered">
+        <f:facet name="header">
+            Lista de Usuários
+        </f:facet>
+        #{user.nickname}, #{user.dateOfLogin}
+    </p:dataList>
+      </p:panel>
+
+
+      </ui:define>
+    </ui:composition>
+  </h:body>
+</html>
