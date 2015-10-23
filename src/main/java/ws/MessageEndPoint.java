@@ -14,8 +14,12 @@ public class MessageEndPoint implements Serializable{
 
 	private static final long serialVersionUID = -3538397497899905150L;
 	
-	static ArrayList<Session> sessions = new ArrayList<>();
+	private static ArrayList<Session> sessions = new ArrayList<Session>();
 	
+	
+	public MessageEndPoint() {
+	}
+
 	@OnMessage
 	public void messageReceiver(String message)	{
 		System.out.println("Messagem recebida: "+message);
@@ -32,6 +36,8 @@ public class MessageEndPoint implements Serializable{
 		System.out.println("Sessao fechou: "+session.getId());
 		sessions.remove(session);
 	}
+
+	// GET AND SET
 
 	public static ArrayList<Session> getSessions() {
 		return sessions;

@@ -8,8 +8,9 @@ import java.util.Date;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.view.ViewScoped;
+import javax.faces.bean.ViewScoped;
 
+import ws.MessageEndPoint;
 import ws.ThreadSender;
 import model.User;
 
@@ -24,12 +25,15 @@ public class UserController implements Serializable{
 	private List<User> users;
 	
 	private String message;
+	
+	private String sessionID;
 
 	public UserController() {
-		
+		System.out.println("*** Construtor!!");
 		this.user = new User();
 		this.users = new ArrayList<User>();
 		this.message = null;
+		this.sessionID = null;
 	}
 	
 	public String addUser(){
@@ -39,11 +43,20 @@ public class UserController implements Serializable{
 		this.user.setDateOfLogin(dateStr);
 		this.user.setId(this.users.size()+1);
 		this.users.add(this.user);
-		
 		this.message = "add::"+this.user.getId()+"::"
 				+ ""+this.user.getNickname()+"::"+this.user.getDateOfLogin();
 		
 		ThreadSender.sendMessageBroadCast(this.message);
+		
+		// Capturando o id da sessao
+		int numbOfSessions = MessageEndPoint.getSessions().size();
+		if (numbOfSessions > 0){
+			this.sessionID = MessageEndPoint.getSessions().get(numbOfSessions-1).getId();
+		}else{
+			this.sessionID = "0";
+		}
+		
+		this.user = new User();
 		return null;
 	}
 	
@@ -76,6 +89,13 @@ public class UserController implements Serializable{
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	
+
+	public String getSessionID() {
+		return sessionID;
+	}
+
+	public void setSessionID(String sessionID) {
+		this.sessionID = sessionID;
+	}
 
 }

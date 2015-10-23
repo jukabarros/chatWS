@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.websocket.Session;
 
-public class ThreadSender extends Thread{
+public class ThreadSender {
 
 	public ThreadSender() {
 
