@@ -39,4 +39,9 @@ public class User implements Serializable{
 		this.dateOfLogin = dateOfLogin;
 	}
 
+	@Override
+	public String toString() {
+		return "User [nickname=" + nickname + "]";
+	}
+
 }

@@ -11,7 +11,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
 import ws.MessageEndPoint;
-import ws.ThreadSender;
 import model.User;
 
 @ManagedBean(name="userController")
@@ -43,11 +42,7 @@ public class UserController implements Serializable{
 		this.user.setDateOfLogin(dateStr);
 		this.user.setId(this.users.size()+1);
 		this.users.add(this.user);
-		this.message = "add::"+this.user.getId()+"::"
-				+ ""+this.user.getNickname()+"::"+this.user.getDateOfLogin();
-		
-		ThreadSender.sendMessageBroadCast(this.message);
-		
+				
 		// Capturando o id da sessao
 		int numbOfSessions = MessageEndPoint.getSessions().size();
 		if (numbOfSessions > 0){
