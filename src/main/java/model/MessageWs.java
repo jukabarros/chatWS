@@ -5,36 +5,47 @@ import java.util.Date;
 
 public class MessageWs implements Serializable{
 	
-	private static final long serialVersionUID = -666065130845000251L;
+	private static final long serialVersionUID = -2169420340503250005L;
 
-	private String text;
+	private String source; // origin
 	
-	private String userSender;
+	private String destination;
 	
-	private Date dateOfReceived;
+	private String body; // content msg
+	
+	private Date timestamp;
 
-	public String getText() {
-		return text;
+	public String getSource() {
+		return source;
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public void setSource(String source) {
+		this.source = source;
 	}
 
-	public String getUserSender() {
-		return userSender;
+	public String getDestination() {
+		return destination;
 	}
 
-	public void setUserSender(String userSender) {
-		this.userSender = userSender;
+	public void setDestination(String destination) {
+		this.destination = destination;
 	}
 
-	public Date getDateOfReceived() {
-		return dateOfReceived;
+	public String getBody() {
+		return body;
 	}
 
-	public void setDateOfReceived(Date dateOfReceived) {
-		this.dateOfReceived = dateOfReceived;
+	public void setBody(String body) {
+		this.body = body;
 	}
+
+	public Date getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
+	}
+
 
 }

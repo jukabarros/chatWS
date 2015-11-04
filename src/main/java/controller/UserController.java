@@ -1,87 +1,113 @@
 package controller;
 
+import java.io.IOException;
 import java.io.Serializable;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import javax.websocket.EncodeException;
+import javax.websocket.Session;
 
-import model.User;
+import model.MessageWs;
+import ws.MessageEndPoint;
 
 @ManagedBean(name="userController")
-@SessionScoped
+@ViewScoped
 public class UserController implements Serializable{
 
 	private static final long serialVersionUID = -3770573459254222700L;
 	
-	private User user;
-	
-	private List<User> users;
-	
-	private String message;
-	
-	
 	private boolean createUserPanel;
+	
+	private String nickname;
+	
+	private String textMessage;
+	
+	private List<String> allNicknames;
+	
 
 	public UserController() {
 		System.out.println("*** Construtor!!");
-		this.user = new User();
-		this.users = new ArrayList<User>();
-		this.message = null;
 		this.createUserPanel = true;
+		this.nickname = null;
+		this.allNicknames = new ArrayList<>();
 	}
 	
-	public String addUser(){
-
-		Format formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-		String dateStr = formatter.format(new Date());
-		this.user.setDateOfLogin(dateStr);
-		if (!this.users.contains(this.user)){
-			this.users.add(this.user);
+	public String addUser() throws IOException, EncodeException {
+		
+		MessageWs msgWS = new MessageWs();
+		msgWS.setSource(getNickname());
+		msgWS.setDestination("all");
+		msgWS.setBody("addUser");
+		msgWS.setTimestamp(new Date());
+		
+		if (!this.allNicknames.contains(this.nickname)){
 			this.createUserPanel = false;
+			this.allNicknames.add(this.nickname);
+			this.sendMsgWSBroadcast(msgWS);
 		}else{
 			System.out.println("Ja existe usuario com esse apelido");
 		}
-		// Enviar para todos os clientes o nickname do usuario
 		return null;
 	}
 	
+	public String sendMessage() throws IOException, EncodeException{
+		MessageWs msgWS = new MessageWs();
+		msgWS.setSource(getNickname());
+		msgWS.setDestination("all");
+		msgWS.setBody(getTextMessage());
+		msgWS.setTimestamp(new Date());
+		
+		this.sendMsgWSBroadcast(msgWS);
+		
+		return null;
+	}
+	
+	private void sendMsgWSBroadcast(MessageWs msgws) throws IOException, EncodeException{
+		List<Session> sessions = MessageEndPoint.getSessions();
+		for (Session s : sessions){
+			if (s.isOpen()) {
+				System.out.println("Enviando MSG para: " + s.getId());
+				s.getBasicRemote().sendObject(msgws);
+			}
+		}
+	}
+	
 	// GET AND SET
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public List<User> getUsers() {
-		return users;
-	}
-
-	public void setUsers(List<User> users) {
-		this.users = users;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
+	
 	public boolean isCreateUserPanel() {
 		return createUserPanel;
 	}
 
 	public void setCreateUserPanel(boolean createUserPanel) {
 		this.createUserPanel = createUserPanel;
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	public List<String> getAllNicknames() {
+		return allNicknames;
+	}
+
+	public void setAllNicknames(List<String> allNicknames) {
+		this.allNicknames = allNicknames;
+	}
+
+	public String getTextMessage() {
+		return textMessage;
+	}
+
+	public void setTextMessage(String textMessage) {
+		this.textMessage = textMessage;
 	}
 
 }

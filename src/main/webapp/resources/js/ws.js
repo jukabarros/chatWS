@@ -2,7 +2,6 @@ var host = "ws://"+document.location.host + "/chatWS/sendmsg";
 var wSocket = new WebSocket(host);
 wSocket.binaryType = "arraybuffer";
 var browserSupport = ("WebSocket" in window) ? true : false;
-var inputText;
 function initWebSocket() {
 
 	if (browserSupport)
@@ -36,25 +35,33 @@ function initWebSocket() {
 }
 
 function sendText() {
-	inputText = document.getElementById("chatPanel:insertMSG").value;
-	var msgWS = '{"text":"' + inputText + '", "userSender": "usuario", "date":"", "dateStr":""}';
+	var inputTextArea = document.getElementById("chatPanel:insertMSG").value;
+	var myNickName = document.getElementById("chatPanel:myNickName").innerHTML;
+	var msgWS = '{"source":"' + myNickName + '", "destination": "all", "body":"'+ inputTextArea +'", "timestamp":""}';
+	console.log("**** JSON: "+msgWS);
 	wSocket.send(msgWS);
 }
 
 function onMessage(evt) {
 	// called when a message is received
 	var received_msg = JSON.parse(evt.data);
-//	console.log("** Remetente: " + received_msg.userSender);
-//	console.log("** Texto: " + received_msg.text);
-//	console.log("** Data: " + received_msg.date);
+	
 	var textArea = document.getElementById("chatPanel:chatArea");
-	textArea.value += received_msg.text +", "+received_msg.date+"\n"
-					+received_msg.text+"\n";
+	console.log("** Remetente: " + received_msg.source);
+	console.log("** Destinatario: " + received_msg.destination);
+	console.log("** Texto: " + received_msg.body);
+	console.log("** Data: " + received_msg.timestamp);
 	
-	textArea.scrollTop = textArea.scrollHeight;
-	
-	document.getElementById("chatPanel:insertMSG").value = "";
-	document.getElementById("chatPanel:insertMSG").focus();
+	if (received_msg.body != "addUser"){
+		
+		textArea.value += received_msg.source +", "+received_msg.timestamp+"\n"
+		+received_msg.body+"\n";
+		
+		textArea.scrollTop = textArea.scrollHeight;
+		
+		document.getElementById("chatPanel:insertMSG").value = "";
+		document.getElementById("chatPanel:insertMSG").focus();
+	}
 }
 
 function onError(evt) {

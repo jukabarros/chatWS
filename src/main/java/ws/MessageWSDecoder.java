@@ -30,9 +30,10 @@ public class MessageWSDecoder implements Decoder.Text<MessageWs>{
 		Date dateOfReceived = new Date();
 		JsonObject jsonObj = Json.createReader(new StringReader(messageText))
 				.readObject();
-		msgWS.setText(jsonObj.getString("text"));
-		msgWS.setUserSender(jsonObj.getString("userSender"));
-		msgWS.setDateOfReceived(dateOfReceived);
+		msgWS.setSource(jsonObj.getString("source"));
+		msgWS.setDestination(jsonObj.getString("destination"));
+		msgWS.setBody(jsonObj.getString("body"));
+		msgWS.setTimestamp(dateOfReceived);
 		return msgWS;
 	}
 

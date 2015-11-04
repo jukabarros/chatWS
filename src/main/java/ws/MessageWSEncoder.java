@@ -28,11 +28,12 @@ public class MessageWSEncoder implements Encoder.Text<MessageWs>{
 	@Override
 	public String encode(MessageWs msgWS) throws EncodeException {
 		Format formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-		String dateStr = formatter.format(msgWS.getDateOfReceived());
+		String dateStr = formatter.format(msgWS.getTimestamp());
 		return Json.createObjectBuilder()
-				.add("text", msgWS.getText())
-				.add("userSender", msgWS.getUserSender())
-				.add("date", dateStr)
+				.add("source", msgWS.getSource())
+				.add("destination", msgWS.getDestination())
+				.add("body", msgWS.getBody())
+				.add("timestamp", dateStr)
 				.build().toString();
 	}
 

@@ -1,0 +1,10 @@
+.topPanelGrid td {
+    vertical-align: top;
+}
+
+.PanelOnlineScroll{
+	float:left;
+	overflow-y: auto;
+	height: 415px;
+	width:98%
+}
