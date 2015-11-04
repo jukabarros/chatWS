@@ -36,26 +36,25 @@ function initWebSocket() {
 }
 
 function sendText() {
-	inputText = document.getElementById("createUser:nickname").value;
+	inputText = document.getElementById("chatPanel:insertMSG").value;
 	var msgWS = '{"text":"' + inputText + '", "userSender": "usuario", "date":"", "dateStr":""}';
 	wSocket.send(msgWS);
-	console.log("******** JSON: " + msgWS);
 }
 
 function onMessage(evt) {
 	// called when a message is received
 	var received_msg = JSON.parse(evt.data);
-	console.log("** Remetente: " + received_msg.userSender);
-	console.log("** Texto: " + received_msg.text);
-	console.log("** Data: " + received_msg.date);
-	// Add Usuario na lista de usuarios
-	// Enviar para o controlador userController e add na lista
-	var textArea = document.getElementById("chatArea");
-	textArea.value += "<b>"+received_msg.text +","+received_msg.date+"</b>\n";
+//	console.log("** Remetente: " + received_msg.userSender);
+//	console.log("** Texto: " + received_msg.text);
+//	console.log("** Data: " + received_msg.date);
+	var textArea = document.getElementById("chatPanel:chatArea");
+	textArea.value += received_msg.text +", "+received_msg.date+"\n"
+					+received_msg.text+"\n";
+	
 	textArea.scrollTop = textArea.scrollHeight;
 	
-	inputText = document.getElementById("createUser:nickname").value = "";
-	inputText.focus();
+	document.getElementById("chatPanel:insertMSG").value = "";
+	document.getElementById("chatPanel:insertMSG").focus();
 }
 
 function onError(evt) {

@@ -8,13 +8,13 @@ import java.util.Date;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 
-import ws.MessageEndPoint;
 import model.User;
 
 @ManagedBean(name="userController")
-@ViewScoped
+@SessionScoped
 public class UserController implements Serializable{
 
 	private static final long serialVersionUID = -3770573459254222700L;
@@ -25,14 +25,15 @@ public class UserController implements Serializable{
 	
 	private String message;
 	
-	private String sessionID;
+	
+	private boolean createUserPanel;
 
 	public UserController() {
 		System.out.println("*** Construtor!!");
 		this.user = new User();
 		this.users = new ArrayList<User>();
 		this.message = null;
-		this.sessionID = null;
+		this.createUserPanel = true;
 	}
 	
 	public String addUser(){
@@ -40,24 +41,14 @@ public class UserController implements Serializable{
 		Format formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		String dateStr = formatter.format(new Date());
 		this.user.setDateOfLogin(dateStr);
-		this.user.setId(this.users.size()+1);
-		this.users.add(this.user);
-				
-		// Capturando o id da sessao
-		int numbOfSessions = MessageEndPoint.getSessions().size();
-		if (numbOfSessions > 0){
-			this.sessionID = MessageEndPoint.getSessions().get(numbOfSessions-1).getId();
+		if (!this.users.contains(this.user)){
+			this.users.add(this.user);
+			this.createUserPanel = false;
 		}else{
-			this.sessionID = "0";
+			System.out.println("Ja existe usuario com esse apelido");
 		}
-		
-		this.user = new User();
+		// Enviar para todos os clientes o nickname do usuario
 		return null;
-	}
-	
-	public String sendMessage(){
-		return null;
-		
 	}
 	
 	// GET AND SET
@@ -85,12 +76,12 @@ public class UserController implements Serializable{
 		this.message = message;
 	}
 
-	public String getSessionID() {
-		return sessionID;
+	public boolean isCreateUserPanel() {
+		return createUserPanel;
 	}
 
-	public void setSessionID(String sessionID) {
-		this.sessionID = sessionID;
+	public void setCreateUserPanel(boolean createUserPanel) {
+		this.createUserPanel = createUserPanel;
 	}
 
 }

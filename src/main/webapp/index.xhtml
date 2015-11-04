@@ -14,20 +14,45 @@
 <h:body>
     <ui:composition template="layout/template.xhtml">
       <ui:define name="content">
-      <p:panel>
+    
+      
+      <p:panel visible="#{userController.createUserPanel}" header="Chat WebSocket">
         <h:form id="createUser">
-        
           <p:messages autoUpdate="true"/>   
+         <h:panelGrid columns="4" cellspacing="2">
           <p:outputLabel for="nickname" value="Apelido:" style="color: crimson"/>
            <p:inputText id="nickname" value="#{userController.user.nickname}"
-             style="color: blue" /> 
-          <h:commandButton id="go" type="button" value="Entrar" onclick="sendText();" />
+             style="color: blue" required="true" requiredMessage="Insira o apelido" />
+             
+          <h:commandButton id="go" value="Entrar" action="#{userController.addUser}" />
+         </h:panelGrid>
         
         </h:form>
+
       </p:panel>
-      <p:panel>
-      	<p:inputTextarea id="chatArea" scrollHeight="10" rows="10" autoResize="false"
-      		readonly="true" style="width:100%; !important;" />
+      
+      <p:panel visible="#{!userController.createUserPanel}" 
+      	style="width:75%" header="Chat WebSocket">
+      
+      	<h:form id="chatPanel">
+	      <h:panelGrid columns="2" width="100%" border="1">
+	      	<h:inputTextarea id="chatArea" scrollHeight="10" rows="10"	      		
+	      		readonly="true" style="width:98%; resize: none;" />
+	      	<h:panelGrid columns="1" width="100%" id="usersOnline" border="1">
+	      		<p:panel header="Online">
+	      			<h:outputText id="userOnline" value="#{userController.user.nickname}" />
+	      		</p:panel>
+	      	</h:panelGrid>
+	      	
+	      	<h:inputTextarea id="insertMSG"
+	      		scrollHeight="4" rows="3" 
+		      	style="width:98%; resize: none;" />
+		      		 
+		    <h:commandButton id="sendMsg" type="button" value="Enviar" onclick="sendText();" />
+		      		
+	      </h:panelGrid>
+      	</h:form>
+      	
       </p:panel>
       
       </ui:define>

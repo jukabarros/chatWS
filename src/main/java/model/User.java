@@ -6,21 +6,11 @@ public class User implements Serializable{
 
 	private static final long serialVersionUID = -7351729135012380019L;
 	
-	private Integer id;
-	
 	private String nickname;
 	
 	private String dateOfLogin;
 	
 	public User() {
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	public String getNickname() {
