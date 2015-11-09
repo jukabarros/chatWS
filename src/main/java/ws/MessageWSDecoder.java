@@ -34,6 +34,7 @@ public class MessageWSDecoder implements Decoder.Text<MessageWs>{
 		msgWS.setDestination(jsonObj.getString("destination"));
 		msgWS.setBody(jsonObj.getString("body"));
 		msgWS.setTimestamp(dateOfReceived);
+		msgWS.setOperation(jsonObj.getString("operation"));
 		return msgWS;
 	}
 

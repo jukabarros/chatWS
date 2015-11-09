@@ -16,53 +16,44 @@
       <ui:define name="content">
     
       
-      <p:panel visible="#{userController.createUserPanel}" header="Chat WebSocket">
+      <p:panel visible="#{chatController.createUserPanel}" header="Chat WebSocket">
         <h:form id="createUser">
           <p:messages autoUpdate="true"/>   
          <h:panelGrid columns="4" cellspacing="2">
           <p:outputLabel for="nickname" value="Apelido:" style="color: crimson"/>
-           <p:inputText id="nickname" value="#{userController.nickname}"
+           <p:inputText id="nickname" value="#{chatController.nickname}"
              style="color: blue" required="true" requiredMessage="Insira o apelido" />
              
-          <h:commandButton id="go" value="Entrar" action="#{userController.addUser}" />
+          <h:commandButton id="go" value="Entrar" action="#{chatController.addUser}" />
          </h:panelGrid>
         
         </h:form>
 
       </p:panel>
       
-      <p:panel visible="#{!userController.createUserPanel}" 
+      <p:panel visible="#{!chatController.createUserPanel}" 
       	style="width:75%" header="Chat WebSocket">
       
       	<h:form id="chatPanel">
-	      <h:panelGrid columns="2" width="100%" border="1" styleClass="topPanelGrid">
+	      <h:panelGrid columns="2" width="100%" styleClass="topPanelGrid">
 	      	<h:inputTextarea id="chatArea" scrollHeight="20" rows="20"	      		
 	      		readonly="true" style="width:98%; resize: none;" />
 	      		
-	      	<p:panel id="userOnline" header="Online"  styleClass="PanelOnlineScroll">
-	      		<h:outputLabel value="#{userController.nickname}" />
-	      		<br /><h:outputLabel value="#{userController.nickname}" />
-	      		<br /><h:outputLabel value="#{userController.nickname}" />
-	      		<br /><h:outputLabel value="#{userController.nickname}" />
-	      		<br /><h:outputLabel value="#{userController.nickname}" />
-	      		<br /><h:outputLabel value="#{userController.nickname}" />
-	      		<br /><h:outputLabel value="#{userController.nickname}" />
-	      		<br /><h:outputLabel value="#{userController.nickname}" />
-	      		<br /><h:outputLabel value="#{userController.nickname}" />
-	      		<br /><h:outputLabel value="#{userController.nickname}" />
-	      		<br /><h:outputLabel value="#{userController.nickname}" />
-	      		<br /><h:outputLabel value="#{userController.nickname}" />
-	      		<br /><h:outputLabel value="#{userController.nickname}" />
-	      		<br /><h:outputLabel value="#{userController.nickname}" />
-	      			      		
-    		</p:panel>
+     		<p:dataList value="#{chatController.allNicknames}" id="allOnlines"
+     			type="unordered" paginator="true" styleClass="paginated"
+     			var="user" rows="15">
+			        <f:facet name="header">
+			            Online
+			        </f:facet>
+			        <h:outputLabel id="userOnline" value="#{user}" />
+ 	        </p:dataList>
     		
-	      	<h:inputTextarea id="insertMSG" value="#{userController.textMessage}"
+	      	<h:inputTextarea id="insertMSG" value="#{chatController.textMessage}"
 	      		scrollHeight="4" rows="3" 
 		      	style="width:98%; resize: none;" />
 		     <h:panelGrid columns="1" cellpadding="4">
 		    	<h:commandButton id="sendMsg" type="button" value="Enviar" onclick="sendText();" />
-		     	Meu Apelido: <h:outputLabel id="myNickName" value="#{userController.nickname}" />
+		     	<h:outputLabel id="myNickName" value="#{chatController.nickname}" />
 		     </h:panelGrid>		 
 	      </h:panelGrid>
 		      		

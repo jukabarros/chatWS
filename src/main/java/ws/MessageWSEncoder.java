@@ -34,6 +34,7 @@ public class MessageWSEncoder implements Encoder.Text<MessageWs>{
 				.add("destination", msgWS.getDestination())
 				.add("body", msgWS.getBody())
 				.add("timestamp", dateStr)
+				.add("operation", msgWS.getOperation())
 				.build().toString();
 	}
 

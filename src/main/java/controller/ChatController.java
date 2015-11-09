@@ -2,7 +2,6 @@ package controller;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,12 +10,13 @@ import javax.faces.bean.ViewScoped;
 import javax.websocket.EncodeException;
 import javax.websocket.Session;
 
+import app.ChatMemory;
 import model.MessageWs;
 import ws.MessageEndPoint;
 
-@ManagedBean(name="userController")
+@ManagedBean(name="chatController")
 @ViewScoped
-public class UserController implements Serializable{
+public class ChatController implements Serializable{
 
 	private static final long serialVersionUID = -3770573459254222700L;
 	
@@ -29,11 +29,11 @@ public class UserController implements Serializable{
 	private List<String> allNicknames;
 	
 
-	public UserController() {
+	public ChatController() {
 		System.out.println("*** Construtor!!");
 		this.createUserPanel = true;
 		this.nickname = null;
-		this.allNicknames = new ArrayList<>();
+		this.allNicknames = ChatMemory.allOnlines;
 	}
 	
 	public String addUser() throws IOException, EncodeException {
@@ -41,7 +41,8 @@ public class UserController implements Serializable{
 		MessageWs msgWS = new MessageWs();
 		msgWS.setSource(getNickname());
 		msgWS.setDestination("all");
-		msgWS.setBody("addUser");
+		msgWS.setBody("Usuário "+this.nickname+" acabou de entrar");
+		msgWS.setOperation("addUser");
 		msgWS.setTimestamp(new Date());
 		
 		if (!this.allNicknames.contains(this.nickname)){

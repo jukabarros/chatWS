@@ -13,6 +13,8 @@ public class MessageWs implements Serializable{
 	
 	private String body; // content msg
 	
+	private String operation; // function
+	
 	private Date timestamp;
 
 	public String getSource() {
@@ -45,6 +47,14 @@ public class MessageWs implements Serializable{
 
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
+	}
+
+	public String getOperation() {
+		return operation;
+	}
+
+	public void setOperation(String operation) {
+		this.operation = operation;
 	}
 
 

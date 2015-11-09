@@ -25,8 +25,9 @@ function initWebSocket() {
 	};
 
 	wSocket.onclose = function(evt)
-	{
-		console.log("****** Socket Fechou!");
+	{	
+		// Remover usuario Online
+		console.log("****** Socket Fechou! "+evt.data);
 	};
 
 	wSocket.onerror = function (evt){
@@ -37,31 +38,54 @@ function initWebSocket() {
 function sendText() {
 	var inputTextArea = document.getElementById("chatPanel:insertMSG").value;
 	var myNickName = document.getElementById("chatPanel:myNickName").innerHTML;
-	var msgWS = '{"source":"' + myNickName + '", "destination": "all", "body":"'+ inputTextArea +'", "timestamp":""}';
-	console.log("**** JSON: "+msgWS);
+	// Melhorar o JSON (caracteres especiais)
+	// fazer a validacao dos destinatarios ('@')
+	var msgWS = '{"source":"' + myNickName + '", "destination": "all", "body":"'+ inputTextArea +'", "timestamp":"", "operation":"sendText"}';
 	wSocket.send(msgWS);
 }
 
 function onMessage(evt) {
 	// called when a message is received
-	var received_msg = JSON.parse(evt.data);
+	var receivedMsg = JSON.parse(evt.data);
 	
-	var textArea = document.getElementById("chatPanel:chatArea");
-	console.log("** Remetente: " + received_msg.source);
-	console.log("** Destinatario: " + received_msg.destination);
-	console.log("** Texto: " + received_msg.body);
-	console.log("** Data: " + received_msg.timestamp);
+	console.log("** Remetente: " + receivedMsg.source);
+	console.log("** Destinatario: " + receivedMsg.destination);
+	console.log("** Texto: " + receivedMsg.body);
+	console.log("** Op: " + receivedMsg.operation);
+	console.log("** Data: " + receivedMsg.timestamp);
 	
-	if (received_msg.body != "addUser"){
+	if (receivedMsg.operation != "addUser"){
 		
-		textArea.value += received_msg.source +", "+received_msg.timestamp+"\n"
-		+received_msg.body+"\n";
+		addMSGArea(receivedMsg.source, receivedMsg.body, receivedMsg.timestamp, receivedMsg.destination);
 		
-		textArea.scrollTop = textArea.scrollHeight;
-		
-		document.getElementById("chatPanel:insertMSG").value = "";
-		document.getElementById("chatPanel:insertMSG").focus();
+	}else{
+		welcomeMSG(receivedMsg.source, receivedMsg.body, receivedMsg.timestamp);
+		addUserOnlinePanel(receivedMsg.source);
 	}
+}
+
+function welcomeMSG(newUser, body, timestamp){
+	// Refresh na lista
+	var textArea = document.getElementById("chatPanel:chatArea");
+	textArea.value += timestamp+"\n"+body+"\n";
+	textArea.scrollTop = textArea.scrollHeight;
+}
+
+function addUserOnlinePanel(user){
+	document.getElementById("chatPanel:allOnlines_list").innerHTML += '<li class="ui-datalist-item"><label>'+user+'</label></li>';
+	console.log("** All Onlines: "+allOnlines);
+	console.log("** Novo Usuário Online: " + user);
+}
+
+function addMSGArea(user, body, timestamp, destination){
+	var textArea = document.getElementById("chatPanel:chatArea");
+	textArea.value += user +", "+ timestamp+"\n"+body+"\n";
+	
+	textArea.scrollTop = textArea.scrollHeight;
+	
+	document.getElementById("chatPanel:insertMSG").value = "";
+	document.getElementById("chatPanel:insertMSG").focus();
+	
 }
 
 function onError(evt) {
