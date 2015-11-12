@@ -28,26 +28,33 @@ public class ChatController implements Serializable{
 	
 	private List<String> allNicknames;
 	
+	// posicao do nickname na lista
+	private int indexOfList;
+	
 
 	public ChatController() {
 		System.out.println("*** Construtor!!");
 		this.createUserPanel = true;
 		this.nickname = null;
 		this.allNicknames = ChatMemory.allOnlines;
+		this.indexOfList = 0;
 	}
 	
 	public String addUser() throws IOException, EncodeException {
 		
-		MessageWs msgWS = new MessageWs();
-		msgWS.setSource(getNickname());
-		msgWS.setDestination("all");
-		msgWS.setBody("Usuário "+this.nickname+" acabou de entrar");
-		msgWS.setOperation("addUser");
-		msgWS.setTimestamp(new Date());
 		
 		if (!this.allNicknames.contains(this.nickname)){
 			this.createUserPanel = false;
 			this.allNicknames.add(this.nickname);
+			
+			this.indexOfList = this.allNicknames.indexOf(this.nickname);
+			MessageWs msgWS = new MessageWs();
+			msgWS.setSource(getNickname());
+			msgWS.setDestination("all");
+			msgWS.setBody("Usuário "+this.nickname+" acabou de entrar");
+			msgWS.setOperation("addUser");
+			msgWS.setTimestamp(new Date());
+			
 			this.sendMsgWSBroadcast(msgWS);
 		}else{
 			System.out.println("Ja existe usuario com esse apelido");
@@ -64,6 +71,19 @@ public class ChatController implements Serializable{
 		
 		this.sendMsgWSBroadcast(msgWS);
 		
+		return null;
+	}
+	
+	public String logoutUser() throws IOException, EncodeException{
+		MessageWs msgWS = new MessageWs();
+		msgWS.setSource(getNickname());
+		msgWS.setDestination("all");
+		msgWS.setBody("Usuário "+this.nickname+" acabou de sair");
+		msgWS.setOperation("logoutUser");
+		msgWS.setTimestamp(new Date());
+		this.createUserPanel = true;
+		this.allNicknames.remove(this.nickname);
+		this.sendMsgWSBroadcast(msgWS);
 		return null;
 	}
 	
@@ -109,6 +129,14 @@ public class ChatController implements Serializable{
 
 	public void setTextMessage(String textMessage) {
 		this.textMessage = textMessage;
+	}
+
+	public int getIndexOfList() {
+		return indexOfList;
+	}
+
+	public void setIndexOfList(int indexOfList) {
+		this.indexOfList = indexOfList;
 	}
 
 }

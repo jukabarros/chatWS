@@ -11,16 +11,7 @@ import java.util.List;
  */
 public class ChatMemory {
 	
+	// Lista com todos os onlines que os novos usuarios recebem
 	public static List<String> allOnlines = new ArrayList<String>();
-	
-	public void addUserOnline(String nickname){
-		allOnlines.add(nickname);
-		System.out.println("Add user: "+nickname);
-	}
-	
-	public void removeUserOnline(String nickname){
-		allOnlines.remove(nickname);
-		System.out.println("Remove user: "+nickname);
-	}
 	
 }

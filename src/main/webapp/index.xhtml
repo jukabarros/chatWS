@@ -33,15 +33,18 @@
       
       <p:panel visible="#{!chatController.createUserPanel}" 
       	style="width:75%" header="Chat WebSocket">
-      
       	<h:form id="chatPanel">
+
+      	<h:commandButton id="logoutUser"
+      		value="Sair"
+      		action="#{chatController.logoutUser()}" />
+
 	      <h:panelGrid columns="2" width="100%" styleClass="topPanelGrid">
 	      	<h:inputTextarea id="chatArea" scrollHeight="20" rows="20"	      		
 	      		readonly="true" style="width:98%; resize: none;" />
 	      		
      		<p:dataList value="#{chatController.allNicknames}" id="allOnlines"
-     			type="unordered" paginator="true" styleClass="paginated"
-     			var="user" rows="15">
+     			type="unordered" styleClass="PanelOnlineScroll"	var="user">
 			        <f:facet name="header">
 			            Online
 			        </f:facet>
@@ -54,6 +57,7 @@
 		     <h:panelGrid columns="1" cellpadding="4">
 		    	<h:commandButton id="sendMsg" type="button" value="Enviar" onclick="sendText();" />
 		     	<h:outputLabel id="myNickName" value="#{chatController.nickname}" />
+		     	<h:inputHidden id="myIndexOflist" value="#{chatController.indexOfList}" />
 		     </h:panelGrid>		 
 	      </h:panelGrid>
 		      		

@@ -26,7 +26,6 @@ function initWebSocket() {
 
 	wSocket.onclose = function(evt)
 	{	
-		// Remover usuario Online
 		console.log("****** Socket Fechou! "+evt.data);
 	};
 
@@ -48,32 +47,35 @@ function onMessage(evt) {
 	// called when a message is received
 	var receivedMsg = JSON.parse(evt.data);
 	
-	console.log("** Remetente: " + receivedMsg.source);
-	console.log("** Destinatario: " + receivedMsg.destination);
-	console.log("** Texto: " + receivedMsg.body);
-	console.log("** Op: " + receivedMsg.operation);
-	console.log("** Data: " + receivedMsg.timestamp);
-	
-	if (receivedMsg.operation != "addUser"){
-		
-		addMSGArea(receivedMsg.source, receivedMsg.body, receivedMsg.timestamp, receivedMsg.destination);
-		
-	}else{
-		welcomeMSG(receivedMsg.source, receivedMsg.body, receivedMsg.timestamp);
+	if (receivedMsg.operation == "addUser"){
+		welcomeMSG(receivedMsg.body, receivedMsg.timestamp);
 		addUserOnlinePanel(receivedMsg.source);
+		
+	}else if (receivedMsg.operation == "logoutUser"){
+		logoutUser(receivedMsg.source);
+
+	}else{
+		addMSGArea(receivedMsg.source, receivedMsg.body, 
+				receivedMsg.timestamp, receivedMsg.destination);
 	}
 }
 
-function welcomeMSG(newUser, body, timestamp){
-	// Refresh na lista
+function welcomeMSG(body, timestamp){
 	var textArea = document.getElementById("chatPanel:chatArea");
 	textArea.value += timestamp+"\n"+body+"\n";
 	textArea.scrollTop = textArea.scrollHeight;
 }
 
 function addUserOnlinePanel(user){
-	document.getElementById("chatPanel:allOnlines_list").innerHTML += '<li class="ui-datalist-item"><label>'+user+'</label></li>';
-	console.log("** All Onlines: "+allOnlines);
+	// Add o index da lista no id da label
+	// Corrigir (nao atualiza qnd novo usuario entra)
+	var myIndexOfList = document.getElementById("chatPanel:myIndexOflist").value;
+	var liElement = document.createElement("li");
+	liElement.innerHTML = '<li class="ui-datalist-item"><label id="chatPanel:allOnlines:'+myIndexOfList+
+							':userOnline">'+user+'</label></li>';
+	
+	document.getElementById("chatPanel:allOnlines_list").appendChild(liElement);
+	
 	console.log("** Novo Usuário Online: " + user);
 }
 
@@ -88,12 +90,19 @@ function addMSGArea(user, body, timestamp, destination){
 	
 }
 
+function logoutUser(user){
+	document.getElementById("chatPanel:allOnlines_list").innerHTML;
+	
+	console.log("*** Usuário logout: "+user);
+	// Remover elemento HTML
+}
+
 function onError(evt) {
 	console.log("Deu merda: "+evt.data);
-//	writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+	writeToScreen('<span style="color: red;">ERROR: </span> ' + evt.data);
 }
 
 function writeToScreen(msg) {
-    var output = document.getElementById("output");
-    output.innerHTML += msg + "<br>";
+    var textArea = document.getElementById("chatPanel:chatArea");
+	textArea.value += msg+"\n";
 }
