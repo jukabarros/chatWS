@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import javax.websocket.CloseReason;
 import javax.websocket.EncodeException;
 import javax.websocket.OnClose;
+import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
@@ -29,11 +31,11 @@ public class MessageEndPoint implements Serializable{
 		try{
 			for (Session s : session.getOpenSessions()){
 				if (s.isOpen()) {
-					System.out.println("Enviando MSG para: " + s.getId());
 					s.getBasicRemote().sendObject(msgWS);
 				}
 			}
-			System.out.println("Mensagem enviada para todos");
+			System.out.println("Mensagem enviada para todos: "+msgWS.getOperation());
+
 		}catch(IOException | EncodeException e){
 			System.err.println("***** Deu merda onMessage: "+e.getMessage());
 		}
@@ -48,11 +50,18 @@ public class MessageEndPoint implements Serializable{
 	}
 	
 	@OnClose
-	public void onClose(Session session){
+	public void onClose(Session session, CloseReason closeReason){
 		System.out.println("Sessao fechou ID: "+session.getId());
+		System.out.println(closeReason);
 		sessions.remove(session);
 	}
-
+	
+	@OnError
+    public void onError(Throwable t) {
+		System.out.println("*** Error Event");
+        t.printStackTrace();
+    }
+	
 	// GET AND SET
 	public static ArrayList<Session> getSessions() {
 		return sessions;

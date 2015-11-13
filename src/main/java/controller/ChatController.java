@@ -57,7 +57,7 @@ public class ChatController implements Serializable{
 			
 			this.sendMsgWSBroadcast(msgWS);
 		}else{
-			System.out.println("Ja existe usuario com esse apelido");
+			System.err.println("*** Ja existe usuario com esse apelido");
 		}
 		return null;
 	}
@@ -91,10 +91,10 @@ public class ChatController implements Serializable{
 		List<Session> sessions = MessageEndPoint.getSessions();
 		for (Session s : sessions){
 			if (s.isOpen()) {
-				System.out.println("Enviando MSG para: " + s.getId());
 				s.getBasicRemote().sendObject(msgws);
 			}
 		}
+		System.out.println("Mensagem enviada para todos: "+msgws.getOperation());
 	}
 	
 	// GET AND SET

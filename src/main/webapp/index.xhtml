@@ -31,13 +31,13 @@
 
       </p:panel>
       
-      <p:panel visible="#{!chatController.createUserPanel}" 
+      <p:panel visible="#{!chatController.createUserPanel}"
       	style="width:75%" header="Chat WebSocket">
       	<h:form id="chatPanel">
 
       	<h:commandButton id="logoutUser"
       		value="Sair"
-      		action="#{chatController.logoutUser()}" />
+      		action="#{chatController.logoutUser}" />
 
 	      <h:panelGrid columns="2" width="100%" styleClass="topPanelGrid">
 	      	<h:inputTextarea id="chatArea" scrollHeight="20" rows="20"	      		

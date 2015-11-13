@@ -8,7 +8,6 @@ function initWebSocket() {
 	{
 		wSocket.onopen = function()
 		{
-			
 			console.log("******* WebSocket Aberto");
 		};
 	}
@@ -26,7 +25,7 @@ function initWebSocket() {
 
 	wSocket.onclose = function(evt)
 	{	
-		console.log("****** Socket Fechou! "+evt.data);
+		console.log("****** Socket Fechou!");
 	};
 
 	wSocket.onerror = function (evt){
@@ -39,7 +38,8 @@ function sendText() {
 	var myNickName = document.getElementById("chatPanel:myNickName").innerHTML;
 	// Melhorar o JSON (caracteres especiais)
 	// fazer a validacao dos destinatarios ('@')
-	var msgWS = '{"source":"' + myNickName + '", "destination": "all", "body":"'+ inputTextArea +'", "timestamp":"", "operation":"sendText"}';
+	var msgWS = '{"source":"' + myNickName + '", "destination": "all", "body":"'+ inputTextArea +
+	'", "timestamp":"", "operation":"sendText"}';
 	wSocket.send(msgWS);
 }
 
@@ -69,12 +69,15 @@ function welcomeMSG(body, timestamp){
 function addUserOnlinePanel(user){
 	// Add o index da lista no id da label
 	// Corrigir (nao atualiza qnd novo usuario entra)
-	var myIndexOfList = document.getElementById("chatPanel:myIndexOflist").value;
-	var liElement = document.createElement("li");
-	liElement.innerHTML = '<li class="ui-datalist-item"><label id="chatPanel:allOnlines:'+myIndexOfList+
-							':userOnline">'+user+'</label></li>';
-	
-	document.getElementById("chatPanel:allOnlines_list").appendChild(liElement);
+	if (user != null){
+		var myIndexOfList = document.getElementById("chatPanel:myIndexOflist").value;
+		var liElement = document.createElement("li");
+		liElement.innerHTML = '<li class="ui-datalist-item"><label id="chatPanel:allOnlines:'+myIndexOfList+
+		':userOnline">'+user+'</label></li>';
+
+		document.getElementById("chatPanel:allOnlines_list").appendChild(liElement);
+		
+	}
 	
 	console.log("** Novo Usuário Online: " + user);
 }
@@ -100,6 +103,7 @@ function logoutUser(user){
 function onError(evt) {
 	console.log("Deu merda: "+evt.data);
 	writeToScreen('<span style="color: red;">ERROR: </span> ' + evt.data);
+	wSocket.onclose(evt);
 }
 
 function writeToScreen(msg) {
