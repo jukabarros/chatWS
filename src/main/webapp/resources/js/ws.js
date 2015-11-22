@@ -67,15 +67,11 @@ function welcomeMSG(body, timestamp){
 }
 
 function addUserOnlinePanel(user){
-	// Add o index da lista no id da label
-	// Corrigir (nao atualiza qnd novo usuario entra)
 	if (user != null){
-		var myIndexOfList = document.getElementById("chatPanel:myIndexOflist").value;
-		var liElement = document.createElement("li");
-		liElement.innerHTML = '<li class="ui-datalist-item"><label id="chatPanel:allOnlines:'+myIndexOfList+
-		':userOnline">'+user+'</label></li>';
-
-		document.getElementById("chatPanel:allOnlines_list").appendChild(liElement);
+		var tdElement = document.createElement("td");
+		tdElement.innerHTML = '<label id="'+user+'">'+user+'</label>';
+		console.log(tdElement);
+		document.getElementById("chatPanel:allOnlines").appendChild(tdElement);
 		
 	}
 	
@@ -94,10 +90,9 @@ function addMSGArea(user, body, timestamp, destination){
 }
 
 function logoutUser(user){
-	document.getElementById("chatPanel:allOnlines_list").innerHTML;
-	
 	console.log("*** Usuário logout: "+user);
-	// Remover elemento HTML
+	var userOnList = document.getElementById(user);
+	userOnList.remove(userOnList);
 }
 
 function onError(evt) {

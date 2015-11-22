@@ -5,8 +5,10 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.websocket.EncodeException;
 import javax.websocket.Session;
 
@@ -15,7 +17,7 @@ import model.MessageWs;
 import ws.MessageEndPoint;
 
 @ManagedBean(name="chatController")
-@ViewScoped
+@SessionScoped
 public class ChatController implements Serializable{
 
 	private static final long serialVersionUID = -3770573459254222700L;
@@ -30,10 +32,8 @@ public class ChatController implements Serializable{
 	
 	// posicao do nickname na lista
 	private int indexOfList;
-	
 
 	public ChatController() {
-		System.out.println("*** Construtor!!");
 		this.createUserPanel = true;
 		this.nickname = null;
 		this.allNicknames = ChatMemory.allOnlines;
@@ -41,8 +41,7 @@ public class ChatController implements Serializable{
 	}
 	
 	public String addUser() throws IOException, EncodeException {
-		
-		
+		FacesContext facesContext = FacesContext.getCurrentInstance();
 		if (!this.allNicknames.contains(this.nickname)){
 			this.createUserPanel = false;
 			this.allNicknames.add(this.nickname);
@@ -56,10 +55,13 @@ public class ChatController implements Serializable{
 			msgWS.setTimestamp(new Date());
 			
 			this.sendMsgWSBroadcast(msgWS);
+			return "chat.xhtml?faces-redirect=true";
 		}else{
 			System.err.println("*** Ja existe usuario com esse apelido");
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+					"Apelido já está sendo usado", "")); 
+			return "index.xhtml?faces-redirect=true";
 		}
-		return null;
 	}
 	
 	public String sendMessage() throws IOException, EncodeException{
@@ -84,7 +86,8 @@ public class ChatController implements Serializable{
 		this.createUserPanel = true;
 		this.allNicknames.remove(this.nickname);
 		this.sendMsgWSBroadcast(msgWS);
-		return null;
+		
+		return "index.xhtml?faces-redirect=true";
 	}
 	
 	private void sendMsgWSBroadcast(MessageWs msgws) throws IOException, EncodeException{
@@ -97,8 +100,13 @@ public class ChatController implements Serializable{
 		System.out.println("Mensagem enviada para todos: "+msgws.getOperation());
 	}
 	
-	// GET AND SET
+	public void insertManyUsers(){
+		for (int i = 0; i < 100; i++) {
+			this.allNicknames.add("teste"+i);
+		}
+	}
 	
+	// GET AND SET
 	public boolean isCreateUserPanel() {
 		return createUserPanel;
 	}

@@ -12,10 +12,6 @@
 
 </h:head>
 <h:body>
-    <ui:composition template="layout/template.xhtml">
-      <ui:define name="content">
-    
-      
       <p:panel visible="#{chatController.createUserPanel}" header="Chat WebSocket">
         <h:form id="createUser">
           <p:messages autoUpdate="true"/>   
@@ -30,42 +26,5 @@
         </h:form>
 
       </p:panel>
-      
-      <p:panel visible="#{!chatController.createUserPanel}"
-      	style="width:75%" header="Chat WebSocket">
-      	<h:form id="chatPanel">
-
-      	<h:commandButton id="logoutUser"
-      		value="Sair"
-      		action="#{chatController.logoutUser}" />
-
-	      <h:panelGrid columns="2" width="100%" styleClass="topPanelGrid">
-	      	<h:inputTextarea id="chatArea" scrollHeight="20" rows="20"	      		
-	      		readonly="true" style="width:98%; resize: none;" />
-	      		
-     		<p:dataList value="#{chatController.allNicknames}" id="allOnlines"
-     			type="unordered" styleClass="PanelOnlineScroll"	var="user">
-			        <f:facet name="header">
-			            Online
-			        </f:facet>
-			        <h:outputLabel id="userOnline" value="#{user}" />
- 	        </p:dataList>
-    		
-	      	<h:inputTextarea id="insertMSG" value="#{chatController.textMessage}"
-	      		scrollHeight="4" rows="3" 
-		      	style="width:98%; resize: none;" />
-		     <h:panelGrid columns="1" cellpadding="4">
-		    	<h:commandButton id="sendMsg" type="button" value="Enviar" onclick="sendText();" />
-		     	<h:outputLabel id="myNickName" value="#{chatController.nickname}" />
-		     	<h:inputHidden id="myIndexOflist" value="#{chatController.indexOfList}" />
-		     </h:panelGrid>		 
-	      </h:panelGrid>
-		      		
-      	</h:form>
-      	
-      </p:panel>
-      
-      </ui:define>
-    </ui:composition>
   </h:body>
 </html>
