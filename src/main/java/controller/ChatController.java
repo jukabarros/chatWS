@@ -30,14 +30,10 @@ public class ChatController implements Serializable{
 	
 	private List<String> allNicknames;
 	
-	// posicao do nickname na lista
-	private int indexOfList;
-
 	public ChatController() {
 		this.createUserPanel = true;
 		this.nickname = null;
 		this.allNicknames = ChatMemory.allOnlines;
-		this.indexOfList = 0;
 	}
 	
 	public String addUser() throws IOException, EncodeException {
@@ -46,7 +42,6 @@ public class ChatController implements Serializable{
 			this.createUserPanel = false;
 			this.allNicknames.add(this.nickname);
 			
-			this.indexOfList = this.allNicknames.indexOf(this.nickname);
 			MessageWs msgWS = new MessageWs();
 			msgWS.setSource(getNickname());
 			msgWS.setDestination("all");
@@ -137,14 +132,6 @@ public class ChatController implements Serializable{
 
 	public void setTextMessage(String textMessage) {
 		this.textMessage = textMessage;
-	}
-
-	public int getIndexOfList() {
-		return indexOfList;
-	}
-
-	public void setIndexOfList(int indexOfList) {
-		this.indexOfList = indexOfList;
 	}
 
 }
