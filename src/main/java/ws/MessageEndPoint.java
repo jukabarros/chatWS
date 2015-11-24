@@ -29,12 +29,46 @@ public class MessageEndPoint implements Serializable{
 	@OnMessage
 	public void messageReceiver(Session session, MessageWs msgWS)	{
 		try{
-			for (Session s : session.getOpenSessions()){
-				if (s.isOpen()) {
-					s.getBasicRemote().sendObject(msgWS);
+			if(msgWS.getOperation().equals("addSessionParameter")){
+				// Adicionando o nickname do usuario na sessao p/ msg unicast
+				session.getUserProperties().put("nickname", msgWS.getSource());
+			}else if (msgWS.getOperation().equals("sendText")){
+				// ---- UNICAST
+				if(msgWS.getBody().startsWith("@")){
+					String[] brokenMsgBody = msgWS.getBody().split(" ");
+					String userReceiver = brokenMsgBody[0].replace("@", "");
+					
+					// Caso o usuario enviar a msg para ele mesmo.
+					/**
+					 * BUG AQUI
+					 * Qnd usa o firefox perde-se o valor do atributo
+					 */
+					if(session.getUserProperties().containsValue(userReceiver)){
+						msgWS.setDestination(userReceiver);
+						session.getBasicRemote().sendObject(msgWS);
+					}else{
+						for (Session s : sessions){
+							if (s.isOpen() && s.getUserProperties().containsValue(userReceiver)){
+								msgWS.setDestination(userReceiver);
+								s.getBasicRemote().sendObject(msgWS);
+								// Enviando para o usuario source (origem)
+								session.getBasicRemote().sendObject(msgWS);
+								System.out.println("Mensagem Unicast enviada para: "+userReceiver);
+								break;
+							}
+						}
+					}
+					
+				}else{
+					// ---- BROADCAST
+					for (Session s : sessions){
+						if (s.isOpen()) {
+							s.getBasicRemote().sendObject(msgWS);
+						}
+					}
+					System.out.println("Mensagem enviada para todos");
 				}
 			}
-			System.out.println("Mensagem enviada para todos: "+msgWS.getOperation());
 
 		}catch(IOException | EncodeException e){
 			System.err.println("***** Deu merda onMessage: "+e.getMessage());
@@ -45,8 +79,6 @@ public class MessageEndPoint implements Serializable{
 	public void onOpen(Session session){
 		System.out.println("Sessao aberta ID: "+session.getId());
 		sessions.add(session);
-		// Para add atributos na sessao
-		// session.getUserProperties().put("atributo", valor);
 	}
 	
 	@OnClose

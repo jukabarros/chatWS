@@ -1,14 +1,20 @@
 var host = "ws://"+document.location.host + "/chatWS/sendmsg";
 var wSocket = new WebSocket(host);
 wSocket.binaryType = "arraybuffer";
+
 var browserSupport = ("WebSocket" in window) ? true : false;
 function initWebSocket() {
 
 	if (browserSupport)
 	{
-		wSocket.onopen = function()
+		wSocket.onopen = function(evt)
 		{
+			var myNickName = document.getElementById("chatPanel:myNickName").innerHTML;
 			console.log("******* WebSocket Aberto");
+			// Adicionar o atributo Nickname na sessao no servidor
+			var msgWS = '{"source":"' + myNickName + '", "destination": "all", "body":""'+
+			', "timestamp":"", "operation":"addSessionParameter"}';
+			wSocket.send(msgWS);
 		};
 	}
 	else
@@ -70,7 +76,6 @@ function addUserOnlinePanel(user){
 	if (user != null){
 		var tdElement = document.createElement("td");
 		tdElement.innerHTML = '<label id="'+user+'">'+user+'</label>';
-		console.log(tdElement);
 		document.getElementById("chatPanel:allOnlines").appendChild(tdElement);
 		
 	}
@@ -80,12 +85,22 @@ function addUserOnlinePanel(user){
 
 function addMSGArea(user, body, timestamp, destination){
 	var textArea = document.getElementById("chatPanel:chatArea");
-	textArea.value += user +", "+ timestamp+"\n"+body+"\n";
-	
-	textArea.scrollTop = textArea.scrollHeight;
-	
-	document.getElementById("chatPanel:insertMSG").value = "";
-	document.getElementById("chatPanel:insertMSG").focus();
+	// Unicast
+	console.log("**** Destination: "+destination);
+	if (destination != "all"){
+		textArea.value += user +", "+ timestamp+"\n MSG PRIVADA: "+body+"\n";
+		
+		textArea.scrollTop = textArea.scrollHeight;
+		
+		document.getElementById("chatPanel:insertMSG").value = "";
+		document.getElementById("chatPanel:insertMSG").focus();
+	}else{
+		// Broadcast
+		textArea.value += user +", "+ timestamp+"\n"+body+"\n";
+		textArea.scrollTop = textArea.scrollHeight;
+		document.getElementById("chatPanel:insertMSG").value = "";
+		document.getElementById("chatPanel:insertMSG").focus();
+	}
 	
 }
 

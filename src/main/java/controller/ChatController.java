@@ -48,7 +48,6 @@ public class ChatController implements Serializable{
 			msgWS.setBody("Usuário "+this.nickname+" acabou de entrar");
 			msgWS.setOperation("addUser");
 			msgWS.setTimestamp(new Date());
-			
 			this.sendMsgWSBroadcast(msgWS);
 			return "chat.xhtml?faces-redirect=true";
 		}else{
