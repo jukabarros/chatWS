@@ -54,32 +54,38 @@ public class ChatController implements Serializable{
 			System.err.println("*** Ja existe usuario com esse apelido");
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
 					"Apelido já está sendo usado", "")); 
-			return "index.xhtml?faces-redirect=true";
+			return null;
 		}
 	}
 	
-	public String sendMessage() throws IOException, EncodeException{
-		MessageWs msgWS = new MessageWs();
-		msgWS.setSource(getNickname());
-		msgWS.setDestination("all");
-		msgWS.setBody(getTextMessage());
-		msgWS.setTimestamp(new Date());
-		
-		this.sendMsgWSBroadcast(msgWS);
-		
-		return null;
-	}
+//	/**
+//	 * VERIFICA SE ESTE METODO ESTA SENDO USADO
+//	 * @return
+//	 * @throws IOException
+//	 * @throws EncodeException
+//	 */
+//	public String sendMessage() throws IOException, EncodeException{
+//		MessageWs msgWS = new MessageWs();
+//		msgWS.setSource(getNickname());
+//		msgWS.setDestination("all");
+//		msgWS.setBody(getTextMessage());
+//		msgWS.setTimestamp(new Date());
+//		
+//		this.sendMsgWSBroadcast(msgWS);
+//		
+//		return null;
+//	}
 	
 	public String logoutUser() throws IOException, EncodeException{
-		MessageWs msgWS = new MessageWs();
-		msgWS.setSource(getNickname());
-		msgWS.setDestination("all");
-		msgWS.setBody("Usuário "+this.nickname+" acabou de sair");
-		msgWS.setOperation("logoutUser");
-		msgWS.setTimestamp(new Date());
-		this.createUserPanel = true;
-		this.allNicknames.remove(this.nickname);
-		this.sendMsgWSBroadcast(msgWS);
+//		MessageWs msgWS = new MessageWs();
+//		msgWS.setSource(getNickname());
+//		msgWS.setDestination("all");
+//		msgWS.setBody("Usuário "+this.nickname+" acabou de sair");
+//		msgWS.setOperation("logoutUser");
+//		msgWS.setTimestamp(new Date());
+//		this.createUserPanel = true;
+//		this.allNicknames.remove(this.nickname);
+//		this.sendMsgWSBroadcast(msgWS);
 		
 		return "index.xhtml?faces-redirect=true";
 	}

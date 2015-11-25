@@ -42,8 +42,7 @@ function initWebSocket() {
 function sendText() {
 	var inputTextArea = document.getElementById("chatPanel:insertMSG").value;
 	var myNickName = document.getElementById("chatPanel:myNickName").innerHTML;
-	// Melhorar o JSON (caracteres especiais)
-	// fazer a validacao dos destinatarios ('@')
+	// Melhorar o JSON (caracteres especiais e o "enter")
 	var msgWS = '{"source":"' + myNickName + '", "destination": "all", "body":"'+ inputTextArea +
 	'", "timestamp":"", "operation":"sendText"}';
 	wSocket.send(msgWS);
@@ -60,7 +59,10 @@ function onMessage(evt) {
 	}else if (receivedMsg.operation == "logoutUser"){
 		logoutUser(receivedMsg.source);
 
-	}else{
+	}else if (receivedMsg.operation == "logoutUserError"){
+		logoutUserError(receivedMsg.source);
+	}
+	else{
 		addMSGArea(receivedMsg.source, receivedMsg.body, 
 				receivedMsg.timestamp, receivedMsg.destination);
 	}
@@ -106,6 +108,12 @@ function addMSGArea(user, body, timestamp, destination){
 
 function logoutUser(user){
 	console.log("*** Usuário logout: "+user);
+	var userOnList = document.getElementById(user);
+	userOnList.remove(userOnList);
+}
+
+function logoutUserError(user){
+	console.log("*** Usuário logout Error: "+user);
 	var userOnList = document.getElementById(user);
 	userOnList.remove(userOnList);
 }
