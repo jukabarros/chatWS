@@ -7,14 +7,16 @@ function initWebSocket() {
 
 	if (browserSupport)
 	{
-		wSocket.onopen = function(evt)
+		wSocket.onopen = function()
 		{
-			var myNickName = document.getElementById("chatPanel:myNickName").innerHTML;
 			console.log("******* WebSocket Aberto");
+			
+			var myNickName = document.getElementById("chatPanel:myNickName").innerHTML;
 			// Adicionar o atributo Nickname na sessao no servidor
 			var msgWS = '{"source":"' + myNickName + '", "destination": "all", "body":""'+
-			', "timestamp":"", "operation":"addSessionParameter"}';
+			', "timestamp":"", "operation":"addNicknameSession"}';
 			wSocket.send(msgWS);
+			console.log("**** MSG WS "+msgWS);
 		};
 	}
 	else

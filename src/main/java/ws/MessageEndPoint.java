@@ -32,21 +32,30 @@ public class MessageEndPoint implements Serializable{
 	public void messageReceiver(Session session, MessageWs msgWS)	{
 		try{
 			String operationMsgWS = msgWS.getOperation();
-			if(operationMsgWS.equals("addSessionParameter")){
+			if(operationMsgWS.equals("addNicknameSession")){
 				// Adicionando o nickname do usuario na sessao p/ msg unicast
 				session.getUserProperties().put("nickname", msgWS.getSource());
 			}else if (operationMsgWS.equals("sendText")){
 				// ---- UNICAST
+				// Remetente
+				String userSource = (String) session.getUserProperties().get("nickname");
 				if(msgWS.getBody().startsWith("@")){
 					String[] brokenMsgBody = msgWS.getBody().split(" ");
 					// Destinatario
-					String userReceiver = brokenMsgBody[0].replace("@", "");
-					// Caso o usuario enviar a msg para ele mesmo.
-					if(session.getUserProperties().containsValue(userReceiver)){
-						msgWS.setDestination(userReceiver);
-						session.getBasicRemote().sendObject(msgWS);
+					String userDestination = brokenMsgBody[0].replace("@", "");
+					msgWS.setDestination(userDestination);
+					// Remetente envia para ele mesmo
+					if (userSource.equals(userDestination)){
+						this.sendUnicastMSGToUserSource(msgWS, session);
+						
+					}else if(ChatMemory.allOnlines.contains(userDestination)){
+						this.sendUnicastMSG(msgWS, userDestination, session);
+						
 					}else{
-						this.sendUnicastMSG(msgWS, userReceiver, session);
+						// Envia a msg de erro para usuario remetente
+						msgWS.setBody("Este usuário não existe. "+userDestination);
+						this.sendUnicastMSGToUserSource(msgWS, session);
+						System.err.println("Este usuário não existe. "+userDestination);
 					}
 					
 				}else{
@@ -70,9 +79,6 @@ public class MessageEndPoint implements Serializable{
 	public void onClose(Session session, CloseReason closeReason) throws IOException, EncodeException{
 		System.out.println("Sessao fechou ID: "+session.getId());
 		System.out.println(closeReason);
-		
-//		this.sendBroadCastMsgUserLogout(session);
-		
 		sessions.remove(session);
 	}
 	
@@ -106,6 +112,23 @@ public class MessageEndPoint implements Serializable{
 				break;
 			}
 		}
+	}
+	
+	/**
+	 * Envia uma mensagem direta para o usuario remetente.
+	 * Utilizado para enviar uma msg de erro indicando que o usuario nao existe
+	 * ou quando ele envia a msg para ele mesmo
+	 * 
+	 * @param msgWS JSON da MSG
+	 * @param session  Sessao WS do usuario Remetente
+	 * @throws EncodeException 
+	 * @throws IOException 
+	 */
+	public void sendUnicastMSGToUserSource(MessageWs msgWS, Session session) throws IOException, EncodeException{
+		String userSource = (String) session.getUserProperties().get("nickname");
+		msgWS.setSource(userSource);
+		session.getBasicRemote().sendObject(msgWS);
+		System.out.println("Mensagem Unicast enviada para: "+userSource);
 	}
 	
 	/**
