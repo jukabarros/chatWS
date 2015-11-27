@@ -9,6 +9,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 import javax.websocket.EncodeException;
 import javax.websocket.Session;
 
@@ -38,12 +39,19 @@ public class ChatController implements Serializable{
 	
 	public String addUser() throws IOException, EncodeException {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
-		if (!this.allNicknames.contains(this.nickname)){
+		this.nickname = this.nickname.trim();
+		if (this.nickname.contains(" ")){
+			System.err.println("*** Não pode inserir usuário com espaço em branco");
+			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Não pode inserir usuário com espaço em branco", "")); 
+			
+			return null;
+		}else if (!this.allNicknames.contains(this.nickname)){
 			this.createUserPanel = false;
 			this.allNicknames.add(this.nickname);
 			
 			MessageWs msgWS = new MessageWs();
-			msgWS.setSource(getNickname());
+			msgWS.setSource(this.nickname);
 			msgWS.setDestination("all");
 			msgWS.setBody("Usuário "+this.nickname+" acabou de entrar");
 			msgWS.setOperation("addUser");
@@ -58,24 +66,6 @@ public class ChatController implements Serializable{
 		}
 	}
 	
-//	/**
-//	 * VERIFICA SE ESTE METODO ESTA SENDO USADO
-//	 * @return
-//	 * @throws IOException
-//	 * @throws EncodeException
-//	 */
-//	public String sendMessage() throws IOException, EncodeException{
-//		MessageWs msgWS = new MessageWs();
-//		msgWS.setSource(getNickname());
-//		msgWS.setDestination("all");
-//		msgWS.setBody(getTextMessage());
-//		msgWS.setTimestamp(new Date());
-//		
-//		this.sendMsgWSBroadcast(msgWS);
-//		
-//		return null;
-//	}
-	
 	public String logoutUser() throws IOException, EncodeException{
 		MessageWs msgWS = new MessageWs();
 		msgWS.setSource(getNickname());
@@ -86,7 +76,8 @@ public class ChatController implements Serializable{
 		this.createUserPanel = true;
 		this.allNicknames.remove(this.nickname);
 		this.sendMsgWSBroadcast(msgWS);
-		
+		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		session.invalidate();
 		return "index.xhtml?faces-redirect=true";
 	}
 	

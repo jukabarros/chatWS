@@ -31,6 +31,7 @@ public class MessageEndPoint implements Serializable{
 	@OnMessage
 	public void messageReceiver(Session session, MessageWs msgWS)	{
 		try{
+			System.out.println("MSG WS: "+msgWS);
 			String operationMsgWS = msgWS.getOperation();
 			if(operationMsgWS.equals("addNicknameSession")){
 				// Adicionando o nickname do usuario na sessao p/ msg unicast

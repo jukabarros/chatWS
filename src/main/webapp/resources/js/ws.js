@@ -4,20 +4,19 @@ wSocket.binaryType = "arraybuffer";
 
 var browserSupport = ("WebSocket" in window) ? true : false;
 function initWebSocket() {
-
 	if (browserSupport)
 	{
 		wSocket.onopen = function()
 		{
 			console.log("******* WebSocket Aberto");
 			
-			var myNickName = document.getElementById("chatPanel:myNickName").innerHTML;
-			// Adicionar o atributo Nickname na sessao no servidor
-			var msgWS = '{"source":"' + myNickName + '", "destination": "all", "body":""'+
-			', "timestamp":"", "operation":"addNicknameSession"}';
-			wSocket.send(msgWS);
-			console.log("**** MSG WS "+msgWS);
 		};
+		var myNickName = document.getElementById("chatPanel:myNickName").innerHTML;
+		// Adicionar o atributo Nickname na sessao no servidor
+		var msgWS = '{"source":"' + myNickName + '", "destination": "all", "body":""'+
+		', "timestamp":"", "operation":"addNicknameSession"}';
+		wSocket.send(msgWS);
+		console.log("**** MSG WS "+msgWS);
 	}
 	else
 	{
@@ -59,18 +58,22 @@ function onMessage(evt) {
 		addUserOnlinePanel(receivedMsg.source);
 		
 	}else if (receivedMsg.operation == "logoutUser"){
+		userLogoutMSG(receivedMsg.body, receivedMsg.timestamp);
 		logoutUser(receivedMsg.source);
 
-	}else if (receivedMsg.operation == "logoutUserError"){
-		logoutUserError(receivedMsg.source);
-	}
-	else{
+	}else{
 		addMSGArea(receivedMsg.source, receivedMsg.body, 
 				receivedMsg.timestamp, receivedMsg.destination);
 	}
 }
 
 function welcomeMSG(body, timestamp){
+	var textArea = document.getElementById("chatPanel:chatArea");
+	textArea.value += timestamp+"\n"+body+"\n";
+	textArea.scrollTop = textArea.scrollHeight;
+}
+
+function userLogoutMSG(body, timestamp){
 	var textArea = document.getElementById("chatPanel:chatArea");
 	textArea.value += timestamp+"\n"+body+"\n";
 	textArea.scrollTop = textArea.scrollHeight;
@@ -112,12 +115,7 @@ function logoutUser(user){
 	console.log("*** Usuário logout: "+user);
 	var userOnList = document.getElementById(user);
 	userOnList.remove(userOnList);
-}
-
-function logoutUserError(user){
-	console.log("*** Usuário logout Error: "+user);
-	var userOnList = document.getElementById(user);
-	userOnList.remove(userOnList);
+	wSocket.onclose("logout: "+user);
 }
 
 function onError(evt) {

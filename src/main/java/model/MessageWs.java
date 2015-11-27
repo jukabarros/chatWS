@@ -57,5 +57,11 @@ public class MessageWs implements Serializable{
 		this.operation = operation;
 	}
 
+	@Override
+	public String toString() {
+		return "MessageWs [source=" + source + ", destination=" + destination
+				+ ", body=" + body + ", operation=" + operation + "]";
+	}
+
 
 }
