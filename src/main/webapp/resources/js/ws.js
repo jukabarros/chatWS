@@ -11,12 +11,6 @@ function initWebSocket() {
 			console.log("******* WebSocket Aberto");
 			
 		};
-		var myNickName = document.getElementById("chatPanel:myNickName").innerHTML;
-		// Adicionar o atributo Nickname na sessao no servidor
-		var msgWS = '{"source":"' + myNickName + '", "destination": "all", "body":""'+
-		', "timestamp":"", "operation":"addNicknameSession"}';
-		wSocket.send(msgWS);
-		console.log("**** MSG WS "+msgWS);
 	}
 	else
 	{
@@ -56,7 +50,7 @@ function onMessage(evt) {
 	if (receivedMsg.operation == "addUser"){
 		welcomeMSG(receivedMsg.body, receivedMsg.timestamp);
 		addUserOnlinePanel(receivedMsg.source);
-		
+			
 	}else if (receivedMsg.operation == "logoutUser"){
 		userLogoutMSG(receivedMsg.body, receivedMsg.timestamp);
 		logoutUser(receivedMsg.source);
@@ -81,9 +75,13 @@ function userLogoutMSG(body, timestamp){
 
 function addUserOnlinePanel(user){
 	if (user != null){
-		var tdElement = document.createElement("td");
-		tdElement.innerHTML = '<label id="'+user+'">'+user+'</label>';
-		document.getElementById("chatPanel:allOnlines").appendChild(tdElement);
+		var table = document.getElementById("chatPanel:allOnlines");
+		// -1 = end of table
+		var newRow   = table.insertRow(-1);
+		newRow.id = user; // atribuindo id na linha
+		var newCell  = newRow.insertCell(-1);
+		var newUser  = document.createTextNode(user);
+		newCell.appendChild(newUser);
 		
 	}
 	
@@ -93,10 +91,8 @@ function addUserOnlinePanel(user){
 function addMSGArea(user, body, timestamp, destination){
 	var textArea = document.getElementById("chatPanel:chatArea");
 	// Unicast
-	console.log("**** Destination: "+destination);
 	if (destination != "all"){
 		textArea.value += user +", "+ timestamp+"\n MSG PRIVADA: "+body+"\n";
-		
 		textArea.scrollTop = textArea.scrollHeight;
 		
 		document.getElementById("chatPanel:insertMSG").value = "";

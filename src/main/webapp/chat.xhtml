@@ -29,8 +29,8 @@
 	      	<p:panel header="Online" styleClass="PanelOnlineScroll">
 		      	<h:panelGrid id="allOnlines">
 		    		<ui:repeat var="user" value="#{chatController.allNicknames}" varStatus="status">
-						<tr>
-							<td id="#{user}" >#{user}</td>
+						<tr id="#{user}">
+							<td>#{user}</td>
 						</tr>
 					</ui:repeat>
 		      	</h:panelGrid>

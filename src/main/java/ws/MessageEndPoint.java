@@ -74,6 +74,7 @@ public class MessageEndPoint implements Serializable{
 	public void onOpen(Session session){
 		System.out.println("Sessao aberta ID: "+session.getId());
 		sessions.add(session);
+		session.getUserProperties().put("nickname", ChatMemory.lastUserOnline);
 	}
 	
 	@OnClose

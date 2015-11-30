@@ -57,6 +57,10 @@ public class ChatController implements Serializable{
 			msgWS.setOperation("addUser");
 			msgWS.setTimestamp(new Date());
 			this.sendMsgWSBroadcast(msgWS);
+			// Memorizando o ultimo usuario online
+			// Paa add o atritubo na sessao WS
+			ChatMemory.lastUserOnline = getNickname();
+			
 			return "chat.xhtml?faces-redirect=true";
 		}else{
 			System.err.println("*** Ja existe usuario com esse apelido");
@@ -81,6 +85,15 @@ public class ChatController implements Serializable{
 		return "index.xhtml?faces-redirect=true";
 	}
 	
+	/**
+	 * Manda msg broadcast para todos os outros usuarios. 
+	 * Importante: A sessao do WS ainda nao foi criada, quando o usuario envia
+	 * a msg atraves do metodo addUser.
+	 * 
+	 * @param msgws JSON da MSG
+	 * @throws IOException
+	 * @throws EncodeException
+	 */
 	private void sendMsgWSBroadcast(MessageWs msgws) throws IOException, EncodeException{
 		List<Session> sessions = MessageEndPoint.getSessions();
 		for (Session s : sessions){
@@ -91,6 +104,10 @@ public class ChatController implements Serializable{
 		System.out.println("Mensagem enviada para todos: "+msgws.getOperation());
 	}
 	
+	/**
+	 * Metodo utilizado para testar o
+	 * painel de usuarios onlines
+	 */
 	public void insertManyUsers(){
 		for (int i = 0; i < 100; i++) {
 			this.allNicknames.add("teste"+i);
