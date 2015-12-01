@@ -23,26 +23,31 @@
       		value="Sair"
       		action="#{chatController.logoutUser}" />
 
-	      <h:panelGrid columns="2" width="100%" styleClass="topPanelGrid">
-	      	<h:inputTextarea id="chatArea" scrollHeight="20" rows="20"	      		
-	      		readonly="true" style="width:98%; resize: none;" />
-	      	<p:panel header="Online" styleClass="PanelOnlineScroll">
-		      	<h:panelGrid id="allOnlines">
-		    		<ui:repeat var="user" value="#{chatController.allNicknames}" varStatus="status">
-						<tr id="#{user}">
-							<td>#{user}</td>
-						</tr>
-					</ui:repeat>
+	      <h:panelGrid columns="2" columnClasses="col1,col2"
+	        styleClass="topPanelGrid, tablePanelGrid">
+
+		      	<h:panelGrid id="chatArea" border="1" styleClass="tableChatMSG">
+		      		<b>Bem vindo ao Chat WS</b>
 		      	</h:panelGrid>
-	      	</p:panel>	
-    		
-	      	<h:inputTextarea id="insertMSG" value="#{chatController.textMessage}"
-	      		scrollHeight="4" rows="3" 
-		      	style="width:98%; resize: none;" />
-		     <h:panelGrid columns="1" cellpadding="4">
-		    	<h:commandButton id="sendMsg" type="button" value="Enviar" onclick="sendText();" />
-		     	<h:outputLabel id="myNickName" value="#{chatController.nickname}" />
-		     </h:panelGrid>		 
+	
+		      	<p:panel header="Online" styleClass="panelOnlineScroll">
+			      	<h:panelGrid id="allOnlines">
+			    		<ui:repeat var="user" value="#{chatController.allNicknames}" varStatus="status">
+							<tr id="#{user}">
+								<td>#{user}</td>
+							</tr>
+						</ui:repeat>
+			      	</h:panelGrid>
+		      	</p:panel>	
+		      	
+		      	<h:inputTextarea id="insertMSG" value="#{chatController.textMessage}"
+		      		scrollHeight="4" rows="3" 
+			      	style="width:98%; resize: none;" />
+			     <h:panelGrid columns="1" cellpadding="4">
+			    	<h:commandButton id="sendMsg" type="button" value="Enviar" onclick="sendText();" />
+			     	<h:outputLabel id="myNickName" value="#{chatController.nickname}" />
+			     </h:panelGrid>
+			     
 	      </h:panelGrid>
 		      		
       	</h:form>

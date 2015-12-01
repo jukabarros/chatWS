@@ -14,10 +14,8 @@ function initWebSocket() {
 	}
 	else
 	{
-		// The browser doesn't support WebSocket
 		alert("WebSocket is NOT supported by your Browser!");
 	}
-
 
 	wSocket.onmessage = function(evt)
 	{
@@ -62,15 +60,23 @@ function onMessage(evt) {
 }
 
 function welcomeMSG(body, timestamp){
-	var textArea = document.getElementById("chatPanel:chatArea");
-	textArea.value += timestamp+"\n"+body+"\n";
-	textArea.scrollTop = textArea.scrollHeight;
+	var tableChatMSG = document.getElementById("chatPanel:chatArea");
+	var newRowChatMSG = tableChatMSG.insertRow(-1);
+	var newCellChatMSG = newRowChatMSG.insertCell(-1);
+	var newChatMSG = document.createTextNode(timestamp+"\n"+body+"\n");
+	newCellChatMSG.appendChild(newChatMSG);
+	tableChatMSG.scrollTop = tableChatMSG.scrollHeight;
 }
 
 function userLogoutMSG(body, timestamp){
-	var textArea = document.getElementById("chatPanel:chatArea");
-	textArea.value += timestamp+"\n"+body+"\n";
-	textArea.scrollTop = textArea.scrollHeight;
+	var tableChatMSG = document.getElementById("chatPanel:chatArea");
+	var newRowChatMSG = tableChatMSG.insertRow(-1);
+	var newCellChatMSG = newRowChatMSG.insertCell(-1);
+	var logoutUser = timestamp+"\n"+body+"\n";
+	
+	newCellChatMSG.appendChild(logoutUser);
+	
+	tableChatMSG.scrollTop = tableChatMSG.scrollHeight;
 }
 
 function addUserOnlinePanel(user){
@@ -89,21 +95,24 @@ function addUserOnlinePanel(user){
 }
 
 function addMSGArea(user, body, timestamp, destination){
-	var textArea = document.getElementById("chatPanel:chatArea");
-	// Unicast
+	var tableChatMSG = document.getElementById("chatPanel:chatArea");
+	var newRowChatMSG = tableChatMSG.insertRow(-1);
+	var newCellChatMSG = newRowChatMSG.insertCell(-1);
+	var chatMSG = "";
+
 	if (destination != "all"){
-		textArea.value += user +", "+ timestamp+"\n MSG PRIVADA: "+body+"\n";
-		textArea.scrollTop = textArea.scrollHeight;
-		
-		document.getElementById("chatPanel:insertMSG").value = "";
-		document.getElementById("chatPanel:insertMSG").focus();
+		// Unicast
+		chatMSG = "<b>"+user +", "+ timestamp+"<br /> MSG PRIVADA: "+body+"</b>";
 	}else{
 		// Broadcast
-		textArea.value += user +", "+ timestamp+"\n"+body+"\n";
-		textArea.scrollTop = textArea.scrollHeight;
-		document.getElementById("chatPanel:insertMSG").value = "";
-		document.getElementById("chatPanel:insertMSG").focus();
+		chatMSG = user +", "+ timestamp+"<br />"+body;
 	}
+//	var newChatMSG = document.createTextNode(chatMSG);
+	newCellChatMSG.innerHTML = chatMSG;
+	tableChatMSG.scrollTop = tableChatMSG.scrollHeight;
+	
+	document.getElementById("chatPanel:insertMSG").value = "";
+	document.getElementById("chatPanel:insertMSG").focus();
 	
 }
 
