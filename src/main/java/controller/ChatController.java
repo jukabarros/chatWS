@@ -58,7 +58,7 @@ public class ChatController implements Serializable{
 			msgWS.setTimestamp(new Date());
 			this.sendMsgWSBroadcast(msgWS);
 			// Memorizando o ultimo usuario online
-			// Paa add o atritubo na sessao WS
+			// Para add o atritubo na sessao WS
 			ChatMemory.lastUserOnline = getNickname();
 			
 			return "chat.xhtml?faces-redirect=true";
@@ -78,7 +78,6 @@ public class ChatController implements Serializable{
 		msgWS.setOperation("logoutUser");
 		msgWS.setTimestamp(new Date());
 		this.createUserPanel = true;
-		this.allNicknames.remove(this.nickname);
 		this.sendMsgWSBroadcast(msgWS);
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		session.invalidate();

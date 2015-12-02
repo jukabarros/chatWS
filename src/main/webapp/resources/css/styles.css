@@ -19,6 +19,9 @@
   	height: 415px;
   	width: 99%;
   	overflow-y: scroll;
+  	word-break: break-all;
+  	font-size: 14px;
+  	word-wrap: break-word;
 }
 
 .col1 { width: 70%; }

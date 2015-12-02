@@ -24,6 +24,7 @@ function initWebSocket() {
 
 	wSocket.onclose = function(evt)
 	{	
+		debugger;
 		console.log("****** Socket Fechou!");
 	};
 
@@ -63,8 +64,9 @@ function welcomeMSG(body, timestamp){
 	var tableChatMSG = document.getElementById("chatPanel:chatArea");
 	var newRowChatMSG = tableChatMSG.insertRow(-1);
 	var newCellChatMSG = newRowChatMSG.insertCell(-1);
-	var newChatMSG = document.createTextNode(timestamp+"\n"+body+"\n");
-	newCellChatMSG.appendChild(newChatMSG);
+	
+	var chatMSG = timestamp+"\n"+body+"\n";
+	newCellChatMSG.innerHTML = chatMSG;
 	tableChatMSG.scrollTop = tableChatMSG.scrollHeight;
 }
 
@@ -72,10 +74,9 @@ function userLogoutMSG(body, timestamp){
 	var tableChatMSG = document.getElementById("chatPanel:chatArea");
 	var newRowChatMSG = tableChatMSG.insertRow(-1);
 	var newCellChatMSG = newRowChatMSG.insertCell(-1);
-	var logoutUser = timestamp+"\n"+body+"\n";
+	var chatMSG = timestamp+"\n"+body+"\n";
 	
-	newCellChatMSG.appendChild(logoutUser);
-	
+	newCellChatMSG.innerHTML = chatMSG;
 	tableChatMSG.scrollTop = tableChatMSG.scrollHeight;
 }
 
@@ -102,12 +103,11 @@ function addMSGArea(user, body, timestamp, destination){
 
 	if (destination != "all"){
 		// Unicast
-		chatMSG = "<b>"+user +", "+ timestamp+"<br /> MSG PRIVADA: "+body+"</b>";
+		chatMSG = "<b>"+user +", "+ timestamp+"<br />"+body+"</b>";
 	}else{
 		// Broadcast
 		chatMSG = user +", "+ timestamp+"<br />"+body;
 	}
-//	var newChatMSG = document.createTextNode(chatMSG);
 	newCellChatMSG.innerHTML = chatMSG;
 	tableChatMSG.scrollTop = tableChatMSG.scrollHeight;
 	

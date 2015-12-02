@@ -81,14 +81,14 @@ public class MessageEndPoint implements Serializable{
 	public void onClose(Session session, CloseReason closeReason) throws IOException, EncodeException{
 		System.out.println("Sessao fechou ID: "+session.getId());
 		System.out.println(closeReason);
+		String nickname = (String) session.getUserProperties().get("nickname");
+		ChatMemory.allOnlines.remove(nickname);
 		sessions.remove(session);
 	}
 	
 	@OnError
     public void onError(Session session, Throwable t) throws IOException, EncodeException {
 		System.out.println("*** Error Event");
-		String nickname = (String) session.getUserProperties().get("nickname");
-		ChatMemory.allOnlines.remove(nickname);
 		this.sendBroadCastMsgUserLogout(session);
         t.printStackTrace();
     }
