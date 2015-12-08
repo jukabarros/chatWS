@@ -31,7 +31,6 @@ public class MessageEndPoint implements Serializable{
 	@OnMessage
 	public void messageReceiver(Session session, MessageWs msgWS)	{
 		try{
-			System.out.println("MSG WS: "+msgWS);
 			String operationMsgWS = msgWS.getOperation();
 			if(operationMsgWS.equals("addNicknameSession")){
 				// Adicionando o nickname do usuario na sessao p/ msg unicast
@@ -54,9 +53,9 @@ public class MessageEndPoint implements Serializable{
 						
 					}else{
 						// Envia a msg de erro para usuario remetente
-						msgWS.setBody("Este usuário não existe. "+userDestination);
+						msgWS.setBody("Este usuário não existe: "+userDestination);
 						this.sendUnicastMSGToUserSource(msgWS, session);
-						System.err.println("Este usuário não existe. "+userDestination);
+						System.err.println("Este usuário não existe: "+userDestination);
 					}
 					
 				}else{
@@ -82,14 +81,23 @@ public class MessageEndPoint implements Serializable{
 		System.out.println("Sessao fechou ID: "+session.getId());
 		System.out.println(closeReason);
 		String nickname = (String) session.getUserProperties().get("nickname");
+		
 		ChatMemory.allOnlines.remove(nickname);
 		sessions.remove(session);
+
+		MessageWs msgWS = new MessageWs();
+		msgWS.setSource(nickname);
+		msgWS.setDestination("all");
+		msgWS.setBody("Usuário "+nickname+" acabou de sair");
+		msgWS.setOperation("logoutUser");
+		msgWS.setTimestamp(new Date());
+		this.sendBroadCastMsg(msgWS);
+		
 	}
 	
 	@OnError
     public void onError(Session session, Throwable t) throws IOException, EncodeException {
 		System.out.println("*** Error Event");
-		this.sendBroadCastMsgUserLogout(session);
         t.printStackTrace();
     }
 	
@@ -146,30 +154,6 @@ public class MessageEndPoint implements Serializable{
 			}
 		}
 		System.out.println("Mensagem enviada para todos");
-	}
-	
-	/**
-	 * Envia uma msg broadcast para os demais usuarios (menos para o remetente)
-	 * Avisando que deu erro ou sua sessao fechou, esta msg 
-	 * atualizara o painel de usuarios online.
-	 * @param session
-	 * @throws EncodeException 
-	 * @throws IOException 
-	 */
-	public void sendBroadCastMsgUserLogout(Session session) throws IOException, EncodeException{
-		MessageWs msgWS = new MessageWs();
-		String nickname = (String) session.getUserProperties().get("nickname");
-		msgWS.setSource(nickname);
-		msgWS.setDestination("all");
-		msgWS.setBody("Usuário "+nickname+" acabou de sair");
-		msgWS.setOperation("logoutUser");
-		msgWS.setTimestamp(new Date());
-		for (Session s : sessions){
-			// Enviando msg para os demais, menos para o remetente
-			if (s.isOpen() && !s.getUserProperties().containsKey(nickname)) {
-				s.getBasicRemote().sendObject(msgWS);
-			}
-		}
 	}
 	
 	// GET AND SET

@@ -58,7 +58,7 @@ public class ChatController implements Serializable{
 			msgWS.setTimestamp(new Date());
 			this.sendMsgWSBroadcast(msgWS);
 			// Memorizando o ultimo usuario online
-			// Para add o atritubo na sessao WS
+			// Para add o atributo na sessao WS
 			ChatMemory.lastUserOnline = getNickname();
 			
 			return "chat.xhtml?faces-redirect=true";
@@ -71,14 +71,7 @@ public class ChatController implements Serializable{
 	}
 	
 	public String logoutUser() throws IOException, EncodeException{
-		MessageWs msgWS = new MessageWs();
-		msgWS.setSource(getNickname());
-		msgWS.setDestination("all");
-		msgWS.setBody("Usuário "+this.nickname+" acabou de sair");
-		msgWS.setOperation("logoutUser");
-		msgWS.setTimestamp(new Date());
 		this.createUserPanel = true;
-		this.sendMsgWSBroadcast(msgWS);
 		HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		session.invalidate();
 		return "index.xhtml?faces-redirect=true";

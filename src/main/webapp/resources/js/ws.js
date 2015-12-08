@@ -24,7 +24,6 @@ function initWebSocket() {
 
 	wSocket.onclose = function(evt)
 	{	
-		debugger;
 		console.log("****** Socket Fechou!");
 	};
 
@@ -36,10 +35,18 @@ function initWebSocket() {
 function sendText() {
 	var inputTextArea = document.getElementById("chatPanel:insertMSG").value;
 	var myNickName = document.getElementById("chatPanel:myNickName").innerHTML;
-	// Melhorar o JSON (caracteres especiais e o "enter")
-	var msgWS = '{"source":"' + myNickName + '", "destination": "all", "body":"'+ inputTextArea +
-	'", "timestamp":"", "operation":"sendText"}';
-	wSocket.send(msgWS);
+
+	var objMsgWS = new Object();
+	objMsgWS.source = myNickName;
+	objMsgWS.destination = "all";
+	objMsgWS.body = inputTextArea;
+	objMsgWS.timestamp = "";
+	objMsgWS.operation = "sendText";
+	
+	var objMsgWSToStr = JSON.stringify(objMsgWS);
+	console.log("****** OBJ STR "+objMsgWSToStr);
+	
+	wSocket.send(objMsgWSToStr);
 }
 
 function onMessage(evt) {
@@ -125,11 +132,14 @@ function logoutUser(user){
 
 function onError(evt) {
 	console.log("Deu merda: "+evt.data);
-	writeToScreen('<span style="color: red;">ERROR: </span> ' + evt.data);
+	var tableChatMSG = document.getElementById("chatPanel:chatArea");
+	var newRowChatMSG = tableChatMSG.insertRow(-1);
+	var newCellChatMSG = newRowChatMSG.insertCell(-1);
+	var chatMSG = '<span style="color: red;">ERROR: </span> ' + evt.data;
+	newCellChatMSG.innerHTML = chatMSG;
+	tableChatMSG.scrollTop = tableChatMSG.scrollHeight;
+	
+	document.getElementById("chatPanel:insertMSG").value = "";
+	document.getElementById("chatPanel:insertMSG").focus();
 	wSocket.onclose(evt);
-}
-
-function writeToScreen(msg) {
-    var textArea = document.getElementById("chatPanel:chatArea");
-	textArea.value += msg+"\n";
 }
