@@ -8,7 +8,7 @@ function initWebSocket() {
 	{
 		wSocket.onopen = function()
 		{
-			console.log("******* WebSocket Aberto");
+			console.log("******* Conexão Aberta");
 			
 		};
 	}
@@ -24,7 +24,7 @@ function initWebSocket() {
 
 	wSocket.onclose = function(evt)
 	{	
-		console.log("****** Socket Fechou!");
+		console.log("****** Conexão Fechou!");
 	};
 
 	wSocket.onerror = function (evt){
@@ -44,7 +44,6 @@ function sendText() {
 	objMsgWS.operation = "sendText";
 	
 	var objMsgWSToStr = JSON.stringify(objMsgWS);
-	console.log("****** OBJ STR "+objMsgWSToStr);
 	
 	wSocket.send(objMsgWSToStr);
 }
