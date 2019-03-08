@@ -42,7 +42,7 @@ public class ChatController implements Serializable{
 		this.nickname = this.nickname.trim();
 		if (this.nickname.contains(" ")){
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Não pode inserir usuário com espaço em branco", "")); 
+					"Please insert your nickname", "")); 
 			
 			return null;
 		}else if (!this.allNicknames.contains(this.nickname)){
@@ -52,18 +52,17 @@ public class ChatController implements Serializable{
 			MessageWs msgWS = new MessageWs();
 			msgWS.setSource(this.nickname);
 			msgWS.setDestination("all");
-			msgWS.setBody("Usuário "+this.nickname+" acabou de entrar");
+			msgWS.setBody("User "+this.nickname+" is online");
 			msgWS.setOperation("addUser");
 			msgWS.setTimestamp(new Date());
 			this.sendMsgWSBroadcast(msgWS);
 			// Memorizando o ultimo usuario online
 			// Para add o atributo na sessao WS
-			ChatMemory.lastUserOnline = getNickname();
-			
+			ChatMemory.lastUserOnline = getNickname();			
 			return "chat.xhtml?faces-redirect=true";
 		}else{
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
-					"Apelido já está sendo usado", "")); 
+					"Nickname already exists", "")); 
 			return null;
 		}
 	}
