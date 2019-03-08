@@ -53,7 +53,7 @@ public class MessageEndPoint implements Serializable{
 						
 					}else{
 						// Envia a msg de erro para usuario remetente
-						msgWS.setBody("Este usuário não existe: "+userDestination);
+						msgWS.setBody("This user does not exist: "+userDestination);
 						this.sendUnicastMSGToUserSource(msgWS, session);
 					}
 					
@@ -64,7 +64,7 @@ public class MessageEndPoint implements Serializable{
 			}
 
 		}catch(IOException | EncodeException e){
-			System.err.println("***** Deu merda onMessage: "+e.getMessage());
+			System.err.println("***** Error onMessage: "+e.getMessage());
 		}
 	}
 	
@@ -82,7 +82,7 @@ public class MessageEndPoint implements Serializable{
 		MessageWs msgWS = new MessageWs();
 		msgWS.setSource(nickname);
 		msgWS.setDestination("all");
-		msgWS.setBody("Usuário "+nickname+" acabou de sair");
+		msgWS.setBody("User: "+nickname+" left");
 		msgWS.setOperation("logoutUser");
 		msgWS.setTimestamp(new Date());
 		this.sendBroadCastMsg(msgWS);
