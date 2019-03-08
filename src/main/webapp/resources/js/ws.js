@@ -8,8 +8,7 @@ function initWebSocket() {
 	{
 		wSocket.onopen = function()
 		{
-			console.log("******* Conexão Aberta");
-			
+			console.log("******* Connection openned");
 		};
 	}
 	else
@@ -24,7 +23,7 @@ function initWebSocket() {
 
 	wSocket.onclose = function(evt)
 	{	
-		console.log("****** Conexão Fechou!");
+		console.log("****** Connection closed!");
 	};
 
 	wSocket.onerror = function (evt){
@@ -97,8 +96,6 @@ function addUserOnlinePanel(user){
 		newCell.appendChild(newUser);
 		
 	}
-	
-	console.log("** Novo Usuário Online: " + user);
 }
 
 function addMSGArea(user, body, timestamp, destination){
@@ -123,21 +120,18 @@ function addMSGArea(user, body, timestamp, destination){
 }
 
 function logoutUser(user){
-	console.log("*** Usuário logout: "+user);
 	var userOnList = document.getElementById(user);
 	userOnList.remove(userOnList);
 	wSocket.onclose("logout: "+user);
 }
 
 function onError(evt) {
-	console.log("Deu merda: "+evt.data);
 	var tableChatMSG = document.getElementById("chatPanel:chatArea");
 	var newRowChatMSG = tableChatMSG.insertRow(-1);
 	var newCellChatMSG = newRowChatMSG.insertCell(-1);
 	var chatMSG = '<span style="color: red;">ERROR: </span> ' + evt.data;
 	newCellChatMSG.innerHTML = chatMSG;
 	tableChatMSG.scrollTop = tableChatMSG.scrollHeight;
-	
 	document.getElementById("chatPanel:insertMSG").value = "";
 	document.getElementById("chatPanel:insertMSG").focus();
 	wSocket.onclose(evt);
