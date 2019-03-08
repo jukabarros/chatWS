@@ -41,7 +41,6 @@ public class ChatController implements Serializable{
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		this.nickname = this.nickname.trim();
 		if (this.nickname.contains(" ")){
-			System.err.println("*** Não pode inserir usuário com espaço em branco");
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Não pode inserir usuário com espaço em branco", "")); 
 			
@@ -63,7 +62,6 @@ public class ChatController implements Serializable{
 			
 			return "chat.xhtml?faces-redirect=true";
 		}else{
-			System.err.println("*** Ja existe usuario com esse apelido");
 			facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
 					"Apelido já está sendo usado", "")); 
 			return null;
@@ -93,7 +91,6 @@ public class ChatController implements Serializable{
 				s.getBasicRemote().sendObject(msgws);
 			}
 		}
-		System.out.println("Mensagem enviada para todos: "+msgws.getOperation());
 	}
 	
 	/**

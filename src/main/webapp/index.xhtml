@@ -12,13 +12,13 @@
 
 </h:head>
 <h:body>
-      <p:panel visible="#{chatController.createUserPanel}" header="Chat WebSocket">
+      <p:panel visible="#{chatController.createUserPanel}" header="Chat JSF and WebSocket">
         <h:form id="createUser">
           <p:messages autoUpdate="true"/>   
          <h:panelGrid columns="4" cellspacing="2">
-          <p:outputLabel for="nickname" value="Apelido:" style="color: crimson"/>
+          <p:outputLabel for="nickname" value="Nickname:" style="color: crimson"/>
            <p:inputText id="nickname" value="#{chatController.nickname}"
-             style="color: blue" required="true" requiredMessage="Insira o apelido" />
+             style="color: blue" required="true" requiredMessage="Insert a nickname" />
              
           <h:commandButton id="go" value="Entrar" action="#{chatController.addUser}" />
          </h:panelGrid>

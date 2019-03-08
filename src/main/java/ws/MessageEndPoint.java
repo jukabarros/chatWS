@@ -55,7 +55,6 @@ public class MessageEndPoint implements Serializable{
 						// Envia a msg de erro para usuario remetente
 						msgWS.setBody("Este usuário não existe: "+userDestination);
 						this.sendUnicastMSGToUserSource(msgWS, session);
-						System.err.println("Este usuário não existe: "+userDestination);
 					}
 					
 				}else{
@@ -71,20 +70,15 @@ public class MessageEndPoint implements Serializable{
 	
 	@OnOpen
 	public void onOpen(Session session){
-		System.out.println("Sessao aberta ID: "+session.getId());
 		sessions.add(session);
 		session.getUserProperties().put("nickname", ChatMemory.lastUserOnline);
 	}
 	
 	@OnClose
 	public void onClose(Session session, CloseReason closeReason) throws IOException, EncodeException{
-		System.out.println("Sessao fechou ID: "+session.getId());
-		System.out.println(closeReason);
 		String nickname = (String) session.getUserProperties().get("nickname");
-		
 		ChatMemory.allOnlines.remove(nickname);
 		sessions.remove(session);
-
 		MessageWs msgWS = new MessageWs();
 		msgWS.setSource(nickname);
 		msgWS.setDestination("all");
@@ -97,8 +91,7 @@ public class MessageEndPoint implements Serializable{
 	
 	@OnError
     public void onError(Session session, Throwable t) throws IOException, EncodeException {
-		System.out.println("*** Error Event");
-        t.printStackTrace();
+		
     }
 	
 	/**
@@ -118,7 +111,6 @@ public class MessageEndPoint implements Serializable{
 				s.getBasicRemote().sendObject(msgWS);
 				// Enviando para o usuario source (origem)
 				session.getBasicRemote().sendObject(msgWS);
-				System.out.println("Mensagem Unicast enviada para: "+destination);
 				break;
 			}
 		}
@@ -138,7 +130,6 @@ public class MessageEndPoint implements Serializable{
 		String userSource = (String) session.getUserProperties().get("nickname");
 		msgWS.setSource(userSource);
 		session.getBasicRemote().sendObject(msgWS);
-		System.out.println("Mensagem Unicast enviada para: "+userSource);
 	}
 	
 	/**
@@ -153,7 +144,6 @@ public class MessageEndPoint implements Serializable{
 				s.getBasicRemote().sendObject(msgWS);
 			}
 		}
-		System.out.println("Mensagem enviada para todos");
 	}
 	
 	// GET AND SET
